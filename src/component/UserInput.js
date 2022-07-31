@@ -18,6 +18,7 @@ constructor(props) {
     userCity: '',
     latitude: '',
     longitude: '',
+    displayName: '',
 };
 }
 handleSubmit = async (e) => {
@@ -25,14 +26,18 @@ handleSubmit = async (e) => {
 const key = process.env.REACT_APP_API_KEY;
   const getCity = await axios.get(`https://eu1.locationiq.com/v1/search?key=${key}&q=${e.target.city.value}&format=json`)
   console.log(getCity);
-console.log(getCity.data.display_name);
+console.log(getCity.data[0].display_name);
 console.log(getCity.data[0].lat);
-console.log(getCity.data[1].lon);
+console.log(getCity.data[0].lon);
 
   this.setState({
     userFirstName: e.target.firstName.value,
     userLastName: e.target.lastName.value,
-    userCity:e.target.city.value
+    userCity:e.target.city.value,
+    displayName: getCity.data[0].display_name,
+    latitude:getCity.data[0].lat,
+    longitude:getCity.data[0].lon
+    
   });
   console.log({
     userFirstName: e.target.firstName.value,
@@ -86,10 +91,7 @@ console.log(getCity.data[1].lon);
       <Row className="mb-3">
         <Form.Group as={Col} md="6" >
           <Form.Label>Latitude</Form.Label>
-          <Form.Control type="text" placeholder="Latitude"  id="latitude"/>
-          <Form.Control.Feedback >
-           Latitude.
-          </Form.Control.Feedback>
+          <Form.Control type="text" placeholder={this.state.latitude}  id="latitude"/>
         </Form.Group>
         
         
@@ -97,10 +99,7 @@ console.log(getCity.data[1].lon);
       <Row className="mb-3">
         <Form.Group as={Col} md="6" >
           <Form.Label>Longitude</Form.Label>
-          <Form.Control type="text" placeholder="Longitude"  id="longitude"/>
-          <Form.Control.Feedback >
-            Longitude.
-          </Form.Control.Feedback>
+          <Form.Control type="text" placeholder={this.state.longitude}  id="longitude"/>
         </Form.Group>
         
         
@@ -108,17 +107,9 @@ console.log(getCity.data[1].lon);
       
       <Button type="submit">Explore!</Button>
     </Form>
-    {/* <Row xs={1} md={4} className="g-4" >
-  {
-      this.getCity.map((item,i )=>(          <Col key={i}> 
-        <li key={i}>
-              <span> name : {this.getCity.data[0].display_name}</span>
-            </li> 
-        
-        </Col>  
-))
-    }
-</Row> */}
+   <div>
+    <h1>{this.state.displayName}</h1>
+   </div>
 </>
     )
   
