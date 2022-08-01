@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import axios from 'axios';
+import Googlemap from '../component/googlemap.js'
 
 
 
@@ -19,12 +20,15 @@ constructor(props) {
     latitude: '',
     longitude: '',
     displayName: '',
+    map:''
 };
 }
 handleSubmit = async (e) => {
   e.preventDefault();
 const key = process.env.REACT_APP_API_KEY;
   const getCity = await axios.get(`https://eu1.locationiq.com/v1/search?key=${key}&q=${e.target.city.value}&format=json`)
+  // const keyMap = process.env.Googlemap_API_KEY;
+  // const getMap = await axios.get(`https://maps.googleapis.com/maps/api/js?key=${keyMap}&callback=initMap`)
   console.log(getCity);
 console.log(getCity.data[0].display_name);
 console.log(getCity.data[0].lat);
@@ -49,6 +53,7 @@ console.log(getCity.data[0].lon);
 
     render() {
      
+      
     return(
       <>
       <Form  onSubmit={this.handleSubmit}>
@@ -106,11 +111,15 @@ console.log(getCity.data[0].lon);
       </Row>
       
       <Button type="submit">Explore!</Button>
+      <Googlemap/>
     </Form>
    <div>
     <h1>{this.state.displayName}</h1>
+    
    </div>
+ 
 </>
+
     )
   
     } 
