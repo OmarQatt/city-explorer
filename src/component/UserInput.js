@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import axios from 'axios';
-import Googlemap from '../component/googlemap.js'
+import Map from './map.js'
 
 
 
@@ -20,34 +20,43 @@ constructor(props) {
     latitude: '',
     longitude: '',
     displayName: '',
-    map:''
+    map:'',
+    errorMessage: '',
+    displayError: false
 };
 }
 handleSubmit = async (e) => {
   e.preventDefault();
-const key = process.env.REACT_APP_API_KEY;
-  const getCity = await axios.get(`https://eu1.locationiq.com/v1/search?key=${key}&q=${e.target.city.value}&format=json`)
-  // const keyMap = process.env.Googlemap_API_KEY;
-  // const getMap = await axios.get(`https://maps.googleapis.com/maps/api/js?key=${keyMap}&callback=initMap`)
-  console.log(getCity);
-console.log(getCity.data[0].display_name);
-console.log(getCity.data[0].lat);
-console.log(getCity.data[0].lon);
 
-  this.setState({
-    userFirstName: e.target.firstName.value,
-    userLastName: e.target.lastName.value,
-    userCity:e.target.city.value,
-    displayName: getCity.data[0].display_name,
-    latitude:getCity.data[0].lat,
-    longitude:getCity.data[0].lon
-    
-  });
-  console.log({
-    userFirstName: e.target.firstName.value,
-    userLastName: e.target.lastName.value,
-    userCity:e.target.city.value,
-  })
+  try {
+    const key = process.env.REACT_APP_API_KEY;
+    const getCity = await axios.get(`https://eu1.locationiq.com/v1/search?key=${key}&q=${e.target.city.value}&format=json`)
+  
+    console.log(getCity);
+  console.log(getCity.data[0].display_name);
+  console.log(getCity.data[0].lat);
+  console.log(getCity.data[0].lon);
+  
+    this.setState({
+      userFirstName: e.target.firstName.value,
+      userLastName: e.target.lastName.value,
+      userCity:e.target.city.value,
+      displayName: getCity.data[0].display_name,
+      latitude:getCity.data[0].lat,
+      longitude:getCity.data[0].lon,
+      displayError: false
+      
+    });
+  } catch (error){
+this.setState({
+  displayError: true,
+  errorMessage: error.response.status + ':' + error.response.data.error,
+  displayName: ''
+})
+
+  }
+
+ 
 
 }
 
@@ -111,13 +120,27 @@ console.log(getCity.data[0].lon);
       </Row>
       
       <Button type="submit">Explore!</Button>
-      <Googlemap/>
+      
     </Form>
+    {
+      this.state.displayError && 
+      <div>
+             {this.state.errorMessage}
+      </div>
+ 
+    }
+    {
+      this.state.displayName &&
+   
    <div>
     <h1>{this.state.displayName}</h1>
+    <Map 
+    map_src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_API_KEY}&center=${this.state.latitude},${this.state.longitude}&zoom=5`}
+    city={this.state.displayName}
     
+    />
    </div>
- 
+  }
 </>
 
     )
