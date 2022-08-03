@@ -71,7 +71,7 @@ this.setState({
 
 displayWeather = async(searchQuery,lat , lon) => {
 try {
-  const weatherData = await axios.get(`http://localhost:3000/weather?searchQuery=${searchQuery}&lat=${lat}&lon=${lon}`);
+  const weatherData = await axios.get(`https://city-explorer-api-api.herokuapp.com/weather?searchQuery=${searchQuery}&lat=${lat}&lon=${lon}`);
   this.setState({
     isWeather:true,
     weather: weatherData.data
@@ -90,7 +90,7 @@ try {
 
 displayMovies = async (searchQuery) => {
 try {
-  const allMovie = await axios.get(`http://localhost:3000/movies?searchQuery=${searchQuery}`);
+  const allMovie = await axios.get(`https://city-explorer-api-api.herokuapp.com/movies?searchQuery=${searchQuery}`);
   this.setState({
     movies: allMovie.data,
     isMovie: true
