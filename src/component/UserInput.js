@@ -6,7 +6,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import axios from 'axios';
 import Map from './map.js'
-
+import Weather from '../Weather.js';
 
 
 class UserInput extends React.Component {
@@ -22,16 +22,20 @@ constructor(props) {
     displayName: '',
     map:'',
     errorMessage: '',
-    displayError: false
+    displayError: false,
+    listOfName:[],
+    weather: [],
+    isWeather: false
 };
 }
 handleSubmit = async (e) => {
   e.preventDefault();
-
+const city = e.target.city.value;
   try {
     const key = process.env.REACT_APP_API_KEY;
     const getCity = await axios.get(`https://eu1.locationiq.com/v1/search?key=${key}&q=${e.target.city.value}&format=json`)
-  
+
+
     console.log(getCity);
   console.log(getCity.data[0].display_name);
   console.log(getCity.data[0].lat);
@@ -44,9 +48,11 @@ handleSubmit = async (e) => {
       displayName: getCity.data[0].display_name,
       latitude:getCity.data[0].lat,
       longitude:getCity.data[0].lon,
-      displayError: false
+      displayError: false,
+
       
     });
+    this.displayWeather(city,getCity.data[0].lat,getCity.data[0].lon)
   } catch (error){
 this.setState({
   displayError: true,
@@ -58,6 +64,25 @@ this.setState({
 
  
 
+}
+
+displayWeather = async(searchQuery,lat , lon) => {
+try {
+  const weatherData = await axios.get(`http://localhost:3000/weather?searchQuery=${searchQuery}&lat=${lat}&lon=${lon}`);
+  this.setState({
+    isWeather:true,
+    weather: weatherData.data
+  })
+}catch (error) {
+  this.setState({
+    displayError: true,
+    errorMessage: error.response.status +':'+ error.response.data.error,
+    isWeather:false,
+    displayName:false
+
+  })
+ 
+}
 }
 
     render() {
@@ -137,9 +162,19 @@ this.setState({
     <Map 
     map_src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_API_KEY}&center=${this.state.latitude},${this.state.longitude}&zoom=5`}
     city={this.state.displayName}
-    
     />
    </div>
+  }
+  {
+    this.state.listOfName.map(item => {
+      return (
+        <li>{item}</li>
+      )
+    })
+  }
+  {this.state.isWeather &&
+   <Weather aboutWeather={this.state.weather}/>
+   
   }
 </>
 
