@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import axios from 'axios';
 import Map from './map.js'
 import Weather from '../Weather.js';
-
+import Movie from './Movies.js';
 
 class UserInput extends React.Component {
 constructor(props) {
@@ -25,7 +25,9 @@ constructor(props) {
     displayError: false,
     listOfName:[],
     weather: [],
-    isWeather: false
+    isWeather: false,
+    movies: [],
+    isMovie: false
 };
 }
 handleSubmit = async (e) => {
@@ -52,7 +54,8 @@ const city = e.target.city.value;
 
       
     });
-    this.displayWeather(city,getCity.data[0].lat,getCity.data[0].lon)
+    this.displayWeather(city,getCity.data[0].lat,getCity.data[0].lon);
+    this.displayMovies(city);
   } catch (error){
 this.setState({
   displayError: true,
@@ -83,6 +86,21 @@ try {
   })
  
 }
+}
+
+displayMovies = async (searchQuery) => {
+try {
+  const allMovie = await axios.get(`http://localhost:3000/movies?searchQuery=${searchQuery}`);
+  this.setState({
+    movies: allMovie.data,
+    isMovie: true
+  })
+} catch (error) {
+  this.setState({
+    isMovie:false
+  })
+}
+
 }
 
     render() {
@@ -175,6 +193,10 @@ try {
   {this.state.isWeather &&
    <Weather aboutWeather={this.state.weather}/>
    
+  }
+  {
+    this.state.isMovie &&
+    <Movie movie={this.state.movies}/>
   }
 </>
 
