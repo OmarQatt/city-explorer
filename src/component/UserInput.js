@@ -6,7 +6,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import axios from 'axios';
 import Map from './map.js'
-import Weather from '../Weather.js';
+import Weather from './Weather.js';
 import Movie from './Movies.js';
 
 class UserInput extends React.Component {

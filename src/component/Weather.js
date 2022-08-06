@@ -1,6 +1,6 @@
 import { Component}from "react";
 import React, { useEffect,useState } from 'react';
-
+import WeatherDay from "./WeatherDay"
  class Weather extends Component {
     render() {
         return (
@@ -10,7 +10,7 @@ import React, { useEffect,useState } from 'react';
 
         return (
             <>
-            <li>{item.date} : {item.description}</li>
+            <WeatherDay weatherdata={item}/>
             </>
         )
     })
